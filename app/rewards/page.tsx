@@ -90,7 +90,7 @@ export default function RewardsPage() {
               <div>
                 <h3 className="font-bold text-green-900">Reward Redeemed!</h3>
                 <p className="text-sm text-green-700">
-                  You've successfully redeemed <strong>{redeemedReward.name}</strong>. Check your
+                  You&apos;ve successfully redeemed <strong>{redeemedReward.name}</strong>. Check your
                   email for delivery details.
                 </p>
               </div>

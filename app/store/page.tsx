@@ -161,7 +161,7 @@ export default function StorePage() {
               <h3 className="font-bold text-blue-900 mb-1">Demo Mode</h3>
               <p className="text-blue-700 text-sm">
                 These are test purchases that will instantly appear in your Recent Transactions.
-                In test mode, transactions are simulated using Stripe's test helpers.
+                In test mode, transactions are simulated using Stripe&apos;s test helpers.
               </p>
             </div>
           </div>

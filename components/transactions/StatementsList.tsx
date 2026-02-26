@@ -115,7 +115,7 @@ export function StatementsList({ statements, onStatementsGenerated }: Statements
           <div className="text-5xl mb-3">📄</div>
           <p className="text-gray-600">No statements available yet</p>
           <p className="text-sm text-gray-500 mt-2">
-            Make some purchases in the Store, then click "Generate Statement" above
+            Make some purchases in the Store, then click &quot;Generate Statement&quot; above
           </p>
         </div>
       ) : (
