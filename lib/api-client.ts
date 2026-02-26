@@ -13,7 +13,7 @@ interface ApiCallOptions {
 type LogFunction = (log: {
   apiName: string;
   apiCategory: ApiCategory;
-  method: string;
+  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   endpoint: string;
   requestPayload?: any;
   responseData?: any;

@@ -1,46 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-import { mockRewards, mockRewardsBalance } from '@/lib/mock-data';
+import { mockRewards } from '@/lib/mock-data';
 
 // Disable caching for this route
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-01-27.acacia' as any,
-});
-
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const connectedAccountId = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
 
 export async function GET(request: NextRequest) {
   try {
-    if (!connectedAccountId) {
-      throw new Error('STRIPE_CONNECTED_ACCOUNT_ID not configured');
+    if (!connectedAccountId || !STRIPE_SECRET_KEY) {
+      throw new Error('Stripe configuration missing');
     }
 
-    // Fetch credit ledger adjustments to calculate rewards points
-    // In a real system, you'd filter by reason to get only reward-related adjustments
-    const adjustments = await stripe.issuing.creditLedgerAdjustments.list(
+    // Fetch credit ledger adjustments using raw fetch
+    const response = await fetch(
+      'https://api.stripe.com/v1/issuing/credit_ledger_adjustments?limit=100',
       {
-        limit: 100,
-      },
-      {
-        stripeAccount: connectedAccountId,
-        apiVersion: '2025-01-27.acacia; issuing_credit_beta=v3' as any,
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+          'Stripe-Version': '2025-01-27.acacia; issuing_credit_beta=v3',
+          'Stripe-Account': connectedAccountId,
+        },
       }
     );
 
-    // Calculate total rewards points from credit adjustments
-    // For demo purposes, we'll count credits as positive points
-    let totalPoints = 2450; // Starting balance
-    if (adjustments.data) {
-      adjustments.data.forEach((adjustment: any) => {
-        if (adjustment.reason === 'platform_issued_credit_memo' && adjustment.amount_type === 'credit') {
-          // Subtract redeemed points (credits reduce the available points)
-          totalPoints -= adjustment.amount / 100; // Convert cents back to points
-        }
-      });
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Stripe API error:', errorData);
+      throw new Error(errorData.error?.message || 'Failed to fetch adjustments');
     }
+
+    const adjustmentsResponse = await response.json();
+    const adjustments = adjustmentsResponse.data || [];
+
+    // Calculate total rewards points from credit adjustments
+    let totalPoints = 2450; // Starting balance
+    adjustments.forEach((adjustment: any) => {
+      if (adjustment.reason === 'platform_issued_credit_memo' && adjustment.amount_type === 'credit') {
+        // Subtract redeemed points (credits reduce the available points)
+        totalPoints -= adjustment.amount / 100; // Convert cents back to points
+      }
+    });
 
     return NextResponse.json({
       success: true,
@@ -52,7 +55,7 @@ export async function GET(request: NextRequest) {
           nextTierPoints: 3000,
           lifetimePoints: 5240,
         },
-        adjustments: adjustments.data,
+        adjustments: adjustments,
       },
     });
   } catch (error: any) {
@@ -73,25 +76,38 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { rewardId, pointsCost, rewardName } = body;
 
-    if (!connectedAccountId) {
-      throw new Error('STRIPE_CONNECTED_ACCOUNT_ID not configured');
+    if (!connectedAccountId || !STRIPE_SECRET_KEY) {
+      throw new Error('Stripe configuration missing');
     }
 
-    // Create a credit ledger adjustment for the reward redemption
-    // This credits the account for the reward value
-    const adjustment = await stripe.issuing.creditLedgerAdjustments.create(
+    // Create a credit ledger adjustment using raw fetch
+    const response = await fetch(
+      'https://api.stripe.com/v1/issuing/credit_ledger_adjustments',
       {
-        amount: pointsCost * 100, // Convert points to cents (1 point = $1)
-        amount_type: 'credit',
-        currency: 'usd',
-        reason: 'platform_issued_credit_memo',
-        reason_description: `Reward redemption: ${rewardName} (${pointsCost} Paw Points)`,
-      },
-      {
-        stripeAccount: connectedAccountId,
-        apiVersion: '2025-01-27.acacia; issuing_credit_beta=v3' as any,
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+          'Stripe-Version': '2025-01-27.acacia; issuing_credit_beta=v3',
+          'Stripe-Account': connectedAccountId,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          amount: String(pointsCost * 100), // Convert points to cents
+          amount_type: 'credit',
+          currency: 'usd',
+          reason: 'platform_issued_credit_memo',
+          reason_description: `Reward redemption: ${rewardName} (${pointsCost} Paw Points)`,
+        }).toString(),
       }
     );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Stripe API error:', errorData);
+      throw new Error(errorData.error?.message || 'Failed to create adjustment');
+    }
+
+    const adjustment = await response.json();
 
     return NextResponse.json({
       success: true,
