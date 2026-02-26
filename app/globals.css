@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-primary: #FF6B35; /* Default Dogs R Us orange */
+  }
+
   body {
     @apply bg-gray-50 text-gray-900 antialiased;
   }

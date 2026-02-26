@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
         availableCredit: (creditLedger.credit_available || 0) / 100,
         creditLimit: (creditLedger.credit_limit || 0) / 100,
         minimumPayment: (creditLedger.minimum_payment_amount || 0) / 100,
-        statementBalance: (creditLedger.statement_balance || 0) / 100,
+        statementBalance: (creditLedger.obligations?.accruing || 0) / 100, // Should match current balance
         dueDate: creditLedger.due_at
           ? new Date(creditLedger.due_at * 1000).toISOString()
           : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),

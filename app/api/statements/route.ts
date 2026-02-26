@@ -41,12 +41,13 @@ export async function GET(request: NextRequest) {
 
     // Transform statements to include relevant fields
     const statements = statementsData.data.map((statement: any) => {
-      // Helper function to safely convert date strings (YYYY-MM-DD format)
-      const toISOString = (dateStr: any) => {
+      // Helper function to safely convert date strings to Unix timestamps
+      const toTimestamp = (dateStr: any) => {
         if (!dateStr) return null;
         try {
-          // If it's a date string like "2026-02-16", convert to ISO
-          return new Date(dateStr + 'T00:00:00Z').toISOString();
+          // If it's a date string like "2026-02-16", convert to Unix timestamp
+          const date = new Date(dateStr + 'T00:00:00Z');
+          return Math.floor(date.getTime() / 1000);
         } catch (e) {
           console.error('Failed to convert date:', dateStr, e);
           return null;
@@ -55,13 +56,16 @@ export async function GET(request: NextRequest) {
 
       return {
         id: statement.id,
-        period_start: toISOString(statement.credit_period_start_date),
-        period_end: toISOString(statement.credit_period_end_date),
+        period_start: toTimestamp(statement.credit_period_start_date),
+        period_end: toTimestamp(statement.credit_period_end_date),
         statement_url: statement.statement_pdf,
-        balance: statement.closing_statement_balance ? statement.closing_statement_balance / 100 : 0,
-        amount_due: statement.statement_minimum_payment ? statement.statement_minimum_payment / 100 : 0,
-        due_date: toISOString(statement.statement_due_date),
-        status: statement.status,
+        balance: statement.closing_statement_balance || 0, // Already in cents
+        amount_due: statement.statement_minimum_payment || 0, // Already in cents
+        amount_paid: 0, // Calculate from repayments if available
+        due_date: toTimestamp(statement.statement_due_date),
+        status: statement.status || 'open',
+        currency: 'usd',
+        created: statement.created || Math.floor(Date.now() / 1000),
       };
     });
 

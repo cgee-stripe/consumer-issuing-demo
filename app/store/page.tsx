@@ -5,6 +5,7 @@ import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { apiClient } from '@/lib/api-client';
+import { useCustomization } from '@/context/CustomizationContext';
 
 interface Product {
   id: string;
@@ -67,6 +68,7 @@ const products: Product[] = [
 ];
 
 export default function StorePage() {
+  const { settings } = useCustomization();
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [lastPurchase, setLastPurchase] = useState<string>('');
@@ -88,14 +90,15 @@ export default function StorePage() {
         },
       });
 
+      console.log('Purchase successful:', product.name);
       setLastPurchase(product.name);
       setShowSuccess(true);
 
       // Hide success message after 3 seconds
       setTimeout(() => setShowSuccess(false), 3000);
-    } catch (error) {
-      console.error('Purchase failed:', error);
-      alert('Purchase failed. Please try again.');
+    } catch (error: any) {
+      console.error('Purchase failed for', product.name, ':', error);
+      alert(`Purchase failed for ${product.name}: ${error.message || 'Please try again.'}`);
     } finally {
       setPurchasing(null);
     }
@@ -105,9 +108,9 @@ export default function StorePage() {
     <div className="p-8 space-y-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dogs R Us Store 🐕🛒</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{settings.companyName} Store 🐕🛒</h1>
           <p className="text-gray-600">
-            Shop for your furry friend using your Dogs R Us Credit Card!
+            Shop for your furry friend using your {settings.companyName} Credit Card!
           </p>
         </div>
 

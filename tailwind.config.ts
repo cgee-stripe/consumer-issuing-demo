@@ -9,15 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Dogs R Us custom color palette
+        // Dogs R Us custom color palette - uses CSS variable for dynamic customization
         primary: {
-          DEFAULT: '#FF6B35',
+          DEFAULT: 'var(--color-primary, #FF6B35)',
           50: '#FFF4F0',
           100: '#FFE8E0',
           200: '#FFD1C2',
           300: '#FFBAA3',
           400: '#FFA385',
-          500: '#FF6B35',
+          500: 'var(--color-primary, #FF6B35)',
           600: '#FF4500',
           700: '#CC3700',
           800: '#992900',

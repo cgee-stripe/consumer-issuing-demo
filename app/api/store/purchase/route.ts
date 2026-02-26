@@ -16,7 +16,24 @@ export async function POST(request: NextRequest) {
       throw new Error('Stripe configuration missing');
     }
 
-    // Get the card from the connected account
+    // Check if there's an active test clock (test clocks are platform-level, not account-level)
+    const testClocksResponse = await fetch(
+      'https://api.stripe.com/v1/test_helpers/test_clocks?limit=10',
+      {
+        headers: {
+          Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+          'Stripe-Version': '2025-01-27.acacia',
+        },
+      }
+    );
+
+    const testClocksData = await testClocksResponse.json();
+    const testClocks = testClocksData.data || [];
+
+    // Find the most recent active test clock
+    const testClock = testClocks.find((clock: any) => clock.status === 'ready' || clock.status === 'advancing');
+
+    // Get the first available card
     const cardsResponse = await fetch(
       `https://api.stripe.com/v1/issuing/cards?limit=1`,
       {
@@ -36,7 +53,15 @@ export async function POST(request: NextRequest) {
 
     const cardId = cards.data[0].id;
 
-    // Create authorization (simulates card swipe)
+    // Create normal authorization + capture (works with or without test clock)
+    const authParams: Record<string, string> = {
+      amount: Math.round(amount * 100).toString(),
+      card: cardId,
+      currency: 'usd',
+      'merchant_data[name]': productName,
+      'merchant_data[category]': category,
+    };
+
     const authResponse = await fetch(
       'https://api.stripe.com/v1/test_helpers/issuing/authorizations',
       {
@@ -47,13 +72,7 @@ export async function POST(request: NextRequest) {
           'Stripe-Account': CONNECTED_ACCOUNT_ID,
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({
-          amount: Math.round(amount * 100).toString(),
-          card: cardId,
-          currency: 'usd',
-          'merchant_data[name]': productName,
-          'merchant_data[category]': category,
-        }).toString(),
+        body: new URLSearchParams(authParams).toString(),
       }
     );
 

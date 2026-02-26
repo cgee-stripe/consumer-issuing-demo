@@ -4,29 +4,37 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PawIcon } from '@/components/icons/PawIcon';
 import { cn } from '@/lib/utils';
+import { useCustomization } from '@/context/CustomizationContext';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: '🏠' },
   { name: 'Store', href: '/store', icon: '🛒' },
   { name: 'Transactions', href: '/transactions', icon: '💳' },
   { name: 'Payments', href: '/payments', icon: '💵' },
+  { name: 'Statements', href: '/statements', icon: '📄' },
   { name: 'Rewards', href: '/rewards', icon: '🎁' },
   { name: 'Card Details', href: '/card', icon: '💎' },
   { name: 'Account', href: '/account', icon: '⚙️' },
+  { name: 'Admin', href: '/admin', icon: '🎨' },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { settings } = useCustomization();
 
   return (
     <div className="flex flex-col h-full bg-white border-r border-gray-200">
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-6 border-b border-gray-200">
-        <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg">
-          <PawIcon className="w-6 h-6 text-white" />
+        <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg overflow-hidden">
+          {settings.companyLogo ? (
+            <img src={settings.companyLogo} alt="Company Logo" className="w-full h-full object-contain p-1" />
+          ) : (
+            <PawIcon className="w-6 h-6 text-white" />
+          )}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Dogs R Us</h1>
+          <h1 className="text-xl font-bold text-gray-900">{settings.companyName}</h1>
           <p className="text-xs text-gray-500">Credit Card Portal</p>
         </div>
       </div>

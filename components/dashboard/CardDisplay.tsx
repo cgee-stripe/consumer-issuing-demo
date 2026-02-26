@@ -2,12 +2,15 @@
 
 import { Card as CardType } from '@/types/card';
 import { PawIcon } from '@/components/icons/PawIcon';
+import { useCustomization } from '@/context/CustomizationContext';
 
 interface CardDisplayProps {
   card: CardType;
 }
 
 export function CardDisplay({ card }: CardDisplayProps) {
+  const { settings } = useCustomization();
+
   return (
     <div className="relative w-full max-w-md mx-auto">
       {/* Credit Card Design */}
@@ -28,9 +31,13 @@ export function CardDisplay({ card }: CardDisplayProps) {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <PawIcon className="w-8 h-8" />
+              {settings.companyLogo ? (
+                <img src={settings.companyLogo} alt="Company Logo" className="w-8 h-8 object-contain" />
+              ) : (
+                <PawIcon className="w-8 h-8" />
+              )}
               <div>
-                <div className="text-sm font-bold">Dogs R Us</div>
+                <div className="text-sm font-bold">{settings.companyName}</div>
                 <div className="text-xs opacity-80">Credit Card</div>
               </div>
             </div>
