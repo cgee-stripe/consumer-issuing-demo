@@ -19,8 +19,9 @@ export default function RewardsPage() {
     async function fetchRewards() {
       try {
         const data = await apiClient.get('/api/rewards', {
-          apiName: 'Get Rewards Catalog',
-          apiCategory: 'Other',
+          apiName: 'List Credit Ledger Adjustments',
+          apiCategory: 'Ledger',
+          stripeEndpoint: 'GET /v1/issuing/credit_ledger_adjustments',
         });
         setBalance(data.data.balance);
         setRewards(data.data.rewards);

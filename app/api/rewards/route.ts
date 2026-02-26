@@ -14,20 +14,53 @@ const connectedAccountId = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
 
 export async function GET(request: NextRequest) {
   try {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    if (!connectedAccountId) {
+      throw new Error('STRIPE_CONNECTED_ACCOUNT_ID not configured');
+    }
+
+    // Fetch credit ledger adjustments to calculate rewards points
+    // In a real system, you'd filter by reason to get only reward-related adjustments
+    const adjustments = await stripe.issuing.creditLedgerAdjustments.list(
+      {
+        limit: 100,
+      },
+      {
+        stripeAccount: connectedAccountId,
+        apiVersion: '2025-01-27.acacia; issuing_credit_beta=v3' as any,
+      }
+    );
+
+    // Calculate total rewards points from credit adjustments
+    // For demo purposes, we'll count credits as positive points
+    let totalPoints = 2450; // Starting balance
+    if (adjustments.data) {
+      adjustments.data.forEach((adjustment: any) => {
+        if (adjustment.reason === 'platform_issued_credit_memo' && adjustment.amount_type === 'credit') {
+          // Subtract redeemed points (credits reduce the available points)
+          totalPoints -= adjustment.amount / 100; // Convert cents back to points
+        }
+      });
+    }
 
     return NextResponse.json({
       success: true,
       data: {
-        rewards: mockRewards,
-        balance: mockRewardsBalance,
+        rewards: mockRewards, // Keep catalog as mock for now
+        balance: {
+          points: totalPoints,
+          tier: 'Gold Paws',
+          nextTierPoints: 3000,
+          lifetimePoints: 5240,
+        },
+        adjustments: adjustments.data,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Failed to fetch rewards:', error);
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to fetch rewards',
+        error: error.message || 'Failed to fetch rewards',
       },
       { status: 500 }
     );

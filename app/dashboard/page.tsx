@@ -48,10 +48,11 @@ export default function DashboardPage() {
         });
         setTransactions(transactionsData.data.transactions);
 
-        // Fetch rewards
+        // Fetch rewards (calculated from credit ledger adjustments)
         const rewardsData = await apiClient.get('/api/rewards', {
-          apiName: 'Get Rewards Balance',
-          apiCategory: 'Other',
+          apiName: 'List Credit Ledger Adjustments',
+          apiCategory: 'Ledger',
+          stripeEndpoint: 'GET /v1/issuing/credit_ledger_adjustments',
         });
         setRewardsPoints(rewardsData.data.balance.points);
       } catch (error) {
