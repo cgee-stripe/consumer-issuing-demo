@@ -38,7 +38,7 @@ export default function StatementsPage() {
     try {
       const data = await apiClient.get('/api/statements', {
         apiName: 'List Credit Statements',
-        apiCategory: 'Statements',
+        apiCategory: 'Account',
         stripeEndpoint: 'GET /v1/issuing/credit_statements',
       });
       setStatements(data.data.statements || []);
@@ -266,7 +266,7 @@ export default function StatementsPage() {
                   <ol className="text-blue-800 space-y-1 list-decimal list-inside">
                     <li>Enable the Test Clock (bottom right)</li>
                     <li>Make some purchases in the store</li>
-                    <li>Click "+1 Month" to close the billing period</li>
+                    <li>Click &quot;+1 Month&quot; to close the billing period</li>
                     <li>Your statement will be generated automatically!</li>
                   </ol>
                 </div>

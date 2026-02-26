@@ -37,7 +37,7 @@ export function StatementPreview({ refreshTrigger }: StatementPreviewProps) {
     try {
       const data = await apiClient.get('/api/statements', {
         apiName: 'List Credit Statements',
-        apiCategory: 'Statements',
+        apiCategory: 'Account',
         stripeEndpoint: 'GET /v1/issuing/credit_statements',
       });
       setStatements(data.data.statements || []);
@@ -91,7 +91,7 @@ export function StatementPreview({ refreshTrigger }: StatementPreviewProps) {
             <ol className="text-blue-800 space-y-1 list-decimal list-inside">
               <li>Enable the Test Clock (bottom right)</li>
               <li>Make some purchases on the store</li>
-              <li>Click "+1 Month" to close the billing period</li>
+              <li>Click &quot;+1 Month&quot; to close the billing period</li>
               <li>Your statement will appear here!</li>
             </ol>
           </div>
@@ -124,10 +124,6 @@ export function StatementPreview({ refreshTrigger }: StatementPreviewProps) {
                         {formatStatementDate(statement.period_start)}
                         {' - '}
                         {formatStatementDate(statement.period_end)}
-                      </p>
-                    ) : statement.statement_date ? (
-                      <p className="text-sm text-gray-600">
-                        Statement Date: {formatStatementDate(statement.statement_date)}
                       </p>
                     ) : (
                       <p className="text-sm text-gray-600">

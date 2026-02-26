@@ -22,7 +22,7 @@ export function TestClockControls() {
     try {
       const data = await apiClient.get('/api/test-clock', {
         apiName: 'Get Test Clock Status',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'GET /v1/test_helpers/test_clocks',
       });
       setTestClockData(data.data);
@@ -41,7 +41,7 @@ export function TestClockControls() {
     try {
       const response = await apiClient.post('/api/test-clock', {
         apiName: 'Create Test Clock',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'POST /v1/test_helpers/test_clocks',
         body: {
           action: 'create',
@@ -72,7 +72,7 @@ export function TestClockControls() {
 
       const response = await apiClient.post('/api/test-clock', {
         apiName: 'Advance Test Clock',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'POST /v1/test_helpers/test_clocks/:id/advance',
         body: {
           action: 'advance',
@@ -108,7 +108,7 @@ export function TestClockControls() {
     try {
       await apiClient.post('/api/test-clock', {
         apiName: 'Delete Test Clock',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'DELETE /v1/test_helpers/test_clocks/:id',
         body: {
           action: 'delete',

@@ -152,10 +152,10 @@ export default function AdminPage() {
                     className="hidden"
                     id="logo-upload"
                   />
-                  <label htmlFor="logo-upload">
-                    <Button as="span" variant="secondary" size="sm">
+                  <label htmlFor="logo-upload" className="cursor-pointer">
+                    <span className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                       Upload Logo
-                    </Button>
+                    </span>
                   </label>
                   {logoPreview && (
                     <Button

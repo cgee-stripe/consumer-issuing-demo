@@ -26,7 +26,7 @@ export function FloatingTestClock({ onTimeAdvanced }: FloatingTestClockProps) {
     try {
       const data = await apiClient.get('/api/test-clock', {
         apiName: 'Get Test Clock Status',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'GET /v1/test_helpers/test_clocks',
       });
       setTestClockData(data.data);
@@ -45,7 +45,7 @@ export function FloatingTestClock({ onTimeAdvanced }: FloatingTestClockProps) {
     try {
       await apiClient.post('/api/test-clock', {
         apiName: 'Create Test Clock',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'POST /v1/test_helpers/test_clocks',
         body: {
           action: 'create',
@@ -76,7 +76,7 @@ export function FloatingTestClock({ onTimeAdvanced }: FloatingTestClockProps) {
 
       await apiClient.post('/api/test-clock', {
         apiName: 'Advance Test Clock',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'POST /v1/test_helpers/test_clocks/:id/advance',
         body: {
           action: 'advance',
@@ -112,7 +112,7 @@ export function FloatingTestClock({ onTimeAdvanced }: FloatingTestClockProps) {
     try {
       await apiClient.post('/api/test-clock', {
         apiName: 'Delete Test Clock',
-        apiCategory: 'Test Helpers',
+        apiCategory: 'Other',
         stripeEndpoint: 'DELETE /v1/test_helpers/test_clocks/:id',
         body: {
           action: 'delete',
@@ -228,7 +228,7 @@ export function FloatingTestClock({ onTimeAdvanced }: FloatingTestClockProps) {
                   <ol className="space-y-1 text-xs list-decimal list-inside">
                     <li>Go to Store & make purchases</li>
                     <li>Come back here</li>
-                    <li>Click "+1 Month" to close period</li>
+                    <li>Click &quot;+1 Month&quot; to close period</li>
                     <li>Statement will auto-generate! 🎉</li>
                   </ol>
                 </div>
