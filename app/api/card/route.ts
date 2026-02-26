@@ -69,14 +69,10 @@ export async function PATCH(request: NextRequest) {
     // In a real app, we'd call Stripe API here
     // const card = await stripe.issuing.cards.update(cardId, {...});
 
-    const updatedCard = {
-      ...mockCard,
-      ...body,
-    };
-
+    // For demo purposes, just return the updated fields
     return NextResponse.json({
       success: true,
-      data: updatedCard,
+      data: body,
       message: 'Card updated successfully',
     });
   } catch (error) {
