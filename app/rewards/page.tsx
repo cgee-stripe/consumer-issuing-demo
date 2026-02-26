@@ -35,24 +35,38 @@ export default function RewardsPage() {
   }, []);
 
   const handleRedeem = async (reward: Reward) => {
-    // In a real app, we'd call an API to redeem the reward
-    // For now, just show success message
-    setRedeemedReward(reward);
-    setShowRedeemSuccess(true);
-
-    // Update balance locally
-    if (balance) {
-      setBalance({
-        ...balance,
-        points: balance.points - reward.pointsCost,
+    try {
+      // Call the API to create a credit ledger adjustment for the reward
+      const response = await apiClient.post('/api/rewards', {
+        apiName: 'Create Credit Ledger Adjustment',
+        apiCategory: 'Ledger',
+        body: {
+          rewardId: reward.id,
+          pointsCost: reward.pointsCost,
+          rewardName: reward.name,
+        },
       });
-    }
 
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-      setShowRedeemSuccess(false);
-      setRedeemedReward(null);
-    }, 5000);
+      setRedeemedReward(reward);
+      setShowRedeemSuccess(true);
+
+      // Update balance locally
+      if (balance) {
+        setBalance({
+          ...balance,
+          points: balance.points - reward.pointsCost,
+        });
+      }
+
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setShowRedeemSuccess(false);
+        setRedeemedReward(null);
+      }, 5000);
+    } catch (error) {
+      console.error('Failed to redeem reward:', error);
+      alert('Failed to redeem reward. Please try again.');
+    }
   };
 
   if (loading) {
