@@ -529,7 +529,7 @@ export default function AdminPage() {
 
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-xs text-blue-800">
-                  <strong>Note:</strong> This will call the Stripe API to create a credit ledger adjustment with amount_type="debit" and reason="platform_issued_debit_memo". The cashback will be visible in the Rewards page after refreshing.
+                  <strong>Note:</strong> This will call the Stripe API to create a credit ledger adjustment with amount_type=&quot;debit&quot; and reason=&quot;platform_issued_debit_memo&quot;. The cashback will be visible in the Rewards page after refreshing.
                 </p>
               </div>
             </div>
