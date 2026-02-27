@@ -15,8 +15,9 @@ export default function AccountPage() {
     async function fetchAccount() {
       try {
         const data = await apiClient.get('/api/account', {
-          apiName: 'Get Account Status',
+          apiName: 'Retrieve Customer',
           apiCategory: 'Account',
+          stripeEndpoint: 'GET /v1/customers/:id',
         });
         setAccount(data.data);
       } catch (error) {
