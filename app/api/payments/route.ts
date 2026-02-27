@@ -143,7 +143,18 @@ export async function POST(request: NextRequest) {
       throw new Error(errorMessage);
     }
 
-    const repayment = await response.json();
+    // Try to parse the response, but handle empty responses
+    let repayment;
+    try {
+      const text = await response.text();
+      if (!text || text.trim().length === 0) {
+        throw new Error('Repayments API returned empty response');
+      }
+      repayment = JSON.parse(text);
+    } catch (parseError) {
+      console.error('Failed to parse repayment response:', parseError);
+      throw new Error('Repayments API returned invalid response');
+    }
 
     // Transform to match our Payment type
     const newPayment = {
