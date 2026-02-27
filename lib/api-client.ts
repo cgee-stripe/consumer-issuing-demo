@@ -37,6 +37,18 @@ async function makeApiCall(
   const startTime = performance.now();
   const { apiName, apiCategory, body, stripeEndpoint } = options;
 
+  // Parse method and endpoint from stripeEndpoint if provided (e.g., "POST /v1/customers/:id")
+  let displayMethod = method;
+  let displayEndpoint = stripeEndpoint || endpoint;
+
+  if (stripeEndpoint) {
+    const parts = stripeEndpoint.split(' ');
+    if (parts.length === 2 && ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'].includes(parts[0])) {
+      displayMethod = parts[0] as 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+      displayEndpoint = parts[1];
+    }
+  }
+
   try {
     const fetchOptions: RequestInit = {
       method,
@@ -58,8 +70,8 @@ async function makeApiCall(
       globalLogFunction({
         apiName,
         apiCategory,
-        method,
-        endpoint: stripeEndpoint || endpoint, // Use Stripe endpoint if provided
+        method: displayMethod,
+        endpoint: displayEndpoint,
         requestPayload: body,
         responseData: data,
         statusCode: response.status,
@@ -82,8 +94,8 @@ async function makeApiCall(
       globalLogFunction({
         apiName,
         apiCategory,
-        method,
-        endpoint: stripeEndpoint || endpoint, // Use Stripe endpoint if provided
+        method: displayMethod,
+        endpoint: displayEndpoint,
         requestPayload: body,
         statusCode: 500,
         duration,
