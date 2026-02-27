@@ -3,17 +3,14 @@
 import { useEffect, useState } from 'react';
 import { TransactionList } from '@/components/transactions/TransactionList';
 import { TransactionFilters } from '@/components/transactions/TransactionFilters';
-import { StatementsList } from '@/components/transactions/StatementsList';
 import { Card } from '@/components/shared/Card';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { apiClient } from '@/lib/api-client';
 import { Transaction, TransactionFilters as Filters } from '@/types/transaction';
-import { Statement } from '@/types/statement';
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
-  const [statements, setStatements] = useState<Statement[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
@@ -27,14 +24,6 @@ export default function TransactionsPage() {
       });
       setTransactions(transactionsData.data.transactions);
       setFilteredTransactions(transactionsData.data.transactions);
-
-      // Fetch statements
-      const statementsData = await apiClient.get('/api/statements', {
-        apiName: 'List Credit Statements',
-        apiCategory: 'Account',
-        stripeEndpoint: 'GET /v1/issuing/credit_statements',
-      });
-      setStatements(statementsData.data.statements);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     } finally {
@@ -122,9 +111,6 @@ export default function TransactionsPage() {
             📥 Export CSV
           </button>
         </div>
-
-        {/* Statements */}
-        <StatementsList statements={statements} onStatementsGenerated={fetchData} />
 
         {/* Filters */}
         <div className="mt-6">

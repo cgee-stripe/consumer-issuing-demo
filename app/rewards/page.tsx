@@ -7,13 +7,24 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { Card } from '@/components/shared/Card';
 import { apiClient } from '@/lib/api-client';
 import { Reward, RewardsBalance as Balance } from '@/types/card';
+import { useCustomization } from '@/context/CustomizationContext';
 
 export default function RewardsPage() {
+  const { settings } = useCustomization();
   const [balance, setBalance] = useState<Balance | null>(null);
-  const [rewards, setRewards] = useState<Reward[]>([]);
   const [loading, setLoading] = useState(true);
   const [showRedeemSuccess, setShowRedeemSuccess] = useState(false);
   const [redeemedReward, setRedeemedReward] = useState<Reward | null>(null);
+
+  // Use rewards from customization settings
+  const rewards = settings.rewardsItems.map(item => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    pointsCost: item.cost,
+    category: item.category,
+    available: item.available,
+  }));
 
   useEffect(() => {
     async function fetchRewards() {
@@ -24,7 +35,6 @@ export default function RewardsPage() {
           stripeEndpoint: 'GET /v1/issuing/credit_ledger_adjustments',
         });
         setBalance(data.data.balance);
-        setRewards(data.data.rewards);
       } catch (error) {
         console.error('Failed to fetch rewards:', error);
       } finally {
@@ -41,6 +51,7 @@ export default function RewardsPage() {
       const response = await apiClient.post('/api/rewards', {
         apiName: 'Create Credit Ledger Adjustment',
         apiCategory: 'Ledger',
+        stripeEndpoint: 'POST /v1/issuing/credit_ledger_adjustments',
         body: {
           rewardId: reward.id,
           pointsCost: reward.pointsCost,
@@ -91,9 +102,9 @@ export default function RewardsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Paw Points Rewards 🐾</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Cashback Rewards 💰</h1>
           <p className="text-gray-600">
-            Earn points on every purchase and redeem them for awesome dog-themed rewards
+            Earn cashback on every purchase and redeem for available rewards
           </p>
         </div>
 
@@ -128,12 +139,12 @@ export default function RewardsPage() {
 
         {/* Information Card */}
         <Card className="bg-blue-50 border-blue-200">
-          <h3 className="font-bold text-blue-900 mb-3">💡 Rewards Program Tips</h3>
+          <h3 className="font-bold text-blue-900 mb-3">💡 Cashback Program Tips</h3>
           <ul className="space-y-2 text-sm text-blue-800">
-            <li>• Points never expire - save up for big rewards!</li>
-            <li>• Earn bonus points during special promotions</li>
-            <li>• Share your referral code to earn 500 bonus points</li>
+            <li>• Cashback never expires - save up for big rewards!</li>
+            <li>• Earn bonus cashback on pet supplies and veterinary care</li>
             <li>• Higher tiers unlock exclusive rewards and better earn rates</li>
+            <li>• Share your referral code to earn $5 bonus cashback</li>
           </ul>
         </Card>
       </div>

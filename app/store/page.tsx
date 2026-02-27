@@ -16,59 +16,11 @@ interface Product {
   emoji: string;
 }
 
-const products: Product[] = [
-  {
-    id: 'prod_1',
-    name: 'Dog Treats',
-    description: 'Delicious treats your dog will love',
-    price: 1,
-    category: 'pet_shops_pet_food_and_supplies',
-    emoji: '🦴',
-  },
-  {
-    id: 'prod_2',
-    name: 'Chew Toy',
-    description: 'Durable toy to keep your dog entertained',
-    price: 5,
-    category: 'pet_shops_pet_food_and_supplies',
-    emoji: '🎾',
-  },
-  {
-    id: 'prod_3',
-    name: 'Dog Food Bag',
-    description: 'Nutritious food your dog will love',
-    price: 10,
-    category: 'pet_shops_pet_food_and_supplies',
-    emoji: '🍖',
-  },
-  {
-    id: 'prod_4',
-    name: 'Dog Grooming',
-    description: 'Professional grooming service',
-    price: 20,
-    category: 'laundry_cleaning_services',
-    emoji: '✂️',
-  },
-  {
-    id: 'prod_5',
-    name: 'Dog Bed',
-    description: 'Comfortable bed for your furry friend',
-    price: 20,
-    category: 'pet_shops_pet_food_and_supplies',
-    emoji: '🛏️',
-  },
-  {
-    id: 'prod_6',
-    name: 'Vet Checkup',
-    description: 'Complete health examination',
-    price: 10,
-    category: 'veterinary_services',
-    emoji: '🩺',
-  },
-];
-
 export default function StorePage() {
   const { settings } = useCustomization();
+
+  // Use store items from customization settings
+  const products: Product[] = settings.storeItems.filter(item => item.available);
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [lastPurchase, setLastPurchase] = useState<string>('');
@@ -108,7 +60,7 @@ export default function StorePage() {
     <div className="p-8 space-y-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{settings.companyName} Store 🐕🛒</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{settings.companyName} Store 💳🛒</h1>
           <p className="text-gray-600">
             Shop for your furry friend using your {settings.companyName} Credit Card!
           </p>

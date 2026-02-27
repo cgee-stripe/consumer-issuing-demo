@@ -129,13 +129,13 @@ export const mockDisputes: Dispute[] = [
   },
 ];
 
-// Mock rewards
+// Mock rewards - cashback redemption for dog-themed items
 export const mockRewards: Reward[] = [
   {
     id: 'rwd_001',
     name: 'Premium Dog Toy Bundle',
     description: 'A collection of durable, fun toys for your furry friend',
-    pointsCost: 500,
+    pointsCost: 5,
     category: 'toys',
     available: true,
   },
@@ -143,7 +143,7 @@ export const mockRewards: Reward[] = [
     id: 'rwd_002',
     name: 'Gourmet Dog Treat Box',
     description: 'Healthy, delicious treats your dog will love',
-    pointsCost: 300,
+    pointsCost: 3,
     category: 'treats',
     available: true,
   },
@@ -151,7 +151,7 @@ export const mockRewards: Reward[] = [
     id: 'rwd_003',
     name: '$50 PetSmart Gift Card',
     description: 'Use at any PetSmart location or online',
-    pointsCost: 1000,
+    pointsCost: 10,
     category: 'supplies',
     available: true,
   },
@@ -159,7 +159,7 @@ export const mockRewards: Reward[] = [
     id: 'rwd_004',
     name: 'Professional Grooming Session',
     description: 'Full grooming service at a participating location',
-    pointsCost: 800,
+    pointsCost: 8,
     category: 'services',
     available: true,
   },
@@ -167,7 +167,7 @@ export const mockRewards: Reward[] = [
     id: 'rwd_005',
     name: 'Dog Training Class',
     description: '6-week basic obedience course',
-    pointsCost: 1500,
+    pointsCost: 15,
     category: 'services',
     available: true,
   },

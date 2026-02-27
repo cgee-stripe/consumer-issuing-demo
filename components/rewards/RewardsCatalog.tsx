@@ -5,6 +5,8 @@ import { Reward } from '@/types/card';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 
+import { formatCurrency } from '@/lib/utils';
+
 interface RewardsCatalogProps {
   rewards: Reward[];
   availablePoints: number;
@@ -74,9 +76,8 @@ export function RewardsCatalog({ rewards, availablePoints, onRedeem }: RewardsCa
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1">
                     <span className="text-2xl font-bold text-primary">
-                      {reward.pointsCost.toLocaleString()}
+                      {formatCurrency(reward.pointsCost, 'usd')}
                     </span>
-                    <span className="text-sm text-gray-500">points</span>
                   </div>
 
                   <Button
@@ -89,7 +90,7 @@ export function RewardsCatalog({ rewards, availablePoints, onRedeem }: RewardsCa
                       ? 'Out of Stock'
                       : canAfford
                       ? 'Redeem'
-                      : 'Not Enough Points'}
+                      : 'Not Enough Cashback'}
                   </Button>
                 </div>
               </div>
@@ -97,7 +98,7 @@ export function RewardsCatalog({ rewards, availablePoints, onRedeem }: RewardsCa
               {!canAfford && reward.available && (
                 <div className="px-4 pb-4">
                   <p className="text-xs text-gray-500">
-                    Need {(reward.pointsCost - availablePoints).toLocaleString()} more points
+                    Need {formatCurrency(reward.pointsCost - availablePoints, 'usd')} more cashback
                   </p>
                 </div>
               )}

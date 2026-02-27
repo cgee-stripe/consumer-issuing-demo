@@ -15,14 +15,27 @@ export function CardDisplay({ card }: CardDisplayProps) {
     <div className="relative w-full max-w-md mx-auto">
       {/* Credit Card Design */}
       <div className="relative h-56 rounded-2xl overflow-hidden shadow-2xl">
-        {/* Card Background - Gradient with dog paw pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-600 to-secondary">
-          {/* Decorative paw prints */}
+        {/* Card Background - Gradient with brand colors */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(135deg, ${settings.primaryColor} 0%, ${settings.primaryColor}dd 50%, ${settings.primaryColor}99 100%)`,
+          }}
+        >
+          {/* Decorative background elements */}
           <div className="absolute top-4 right-4 opacity-20">
-            <PawIcon className="w-20 h-20" />
+            {settings.companyLogo ? (
+              <img src={settings.companyLogo} alt="Logo" className="w-20 h-20 object-contain" />
+            ) : (
+              <PawIcon className="w-20 h-20" />
+            )}
           </div>
           <div className="absolute bottom-8 left-8 opacity-10">
-            <PawIcon className="w-16 h-16" />
+            {settings.companyLogo ? (
+              <img src={settings.companyLogo} alt="Logo" className="w-16 h-16 object-contain" />
+            ) : (
+              <PawIcon className="w-16 h-16" />
+            )}
           </div>
         </div>
 

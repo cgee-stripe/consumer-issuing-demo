@@ -64,6 +64,14 @@ export default function StatementsPage() {
     }
   };
 
+  const handleDownloadPDF = (statement: Statement) => {
+    if (!statement.statement_url) return;
+
+    // Use our proxy endpoint to download the PDF with proper authentication
+    const proxyUrl = `/api/statements/download?url=${encodeURIComponent(statement.statement_url)}`;
+    window.open(proxyUrl, '_blank');
+  };
+
   const renderStatementContent = (statement: Statement) => {
     return (
       <>
@@ -91,7 +99,7 @@ export default function StatementsPage() {
 
           {statement.statement_url && (
             <Button
-              onClick={() => window.open(statement.statement_url, '_blank')}
+              onClick={() => handleDownloadPDF(statement)}
               variant="secondary"
               size="sm"
             >
@@ -198,7 +206,7 @@ export default function StatementsPage() {
         <div className="border-t pt-3 flex gap-2">
           {statement.statement_url && (
             <Button
-              onClick={() => window.open(statement.statement_url, '_blank')}
+              onClick={() => handleDownloadPDF(statement)}
               className="flex-1"
               size="sm"
             >
