@@ -96,17 +96,17 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 md:p-8 space-y-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Transactions</h1>
-            <p className="text-gray-600">View and manage your transaction history</p>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Transactions</h1>
+            <p className="text-sm md:text-base text-gray-600">View and manage your transaction history</p>
           </div>
           <button
             onClick={handleExport}
-            className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-600 transition-colors"
+            className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-600 transition-colors text-sm sm:text-base whitespace-nowrap flex-shrink-0"
           >
             📥 Export CSV
           </button>

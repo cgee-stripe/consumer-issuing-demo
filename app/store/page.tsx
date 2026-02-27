@@ -57,11 +57,11 @@ export default function StorePage() {
   };
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{settings.companyName} Store 💳🛒</h1>
-          <p className="text-gray-600">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{settings.companyName} Store 💳🛒</h1>
+          <p className="text-sm md:text-base text-gray-600">
             Shop for your furry friend using your {settings.companyName} Credit Card!
           </p>
         </div>

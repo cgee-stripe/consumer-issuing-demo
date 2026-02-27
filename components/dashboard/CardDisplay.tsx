@@ -1,7 +1,6 @@
 'use client';
 
 import { Card as CardType } from '@/types/card';
-import { PawIcon } from '@/components/icons/PawIcon';
 import { useCustomization } from '@/context/CustomizationContext';
 
 interface CardDisplayProps {
@@ -27,14 +26,14 @@ export function CardDisplay({ card }: CardDisplayProps) {
             {settings.companyLogo ? (
               <img src={settings.companyLogo} alt="Logo" className="w-20 h-20 object-contain" />
             ) : (
-              <PawIcon className="w-20 h-20" />
+              <span className="text-white text-8xl">🐾</span>
             )}
           </div>
           <div className="absolute bottom-8 left-8 opacity-10">
             {settings.companyLogo ? (
               <img src={settings.companyLogo} alt="Logo" className="w-16 h-16 object-contain" />
             ) : (
-              <PawIcon className="w-16 h-16" />
+              <span className="text-white text-6xl">🐾</span>
             )}
           </div>
         </div>
@@ -47,7 +46,7 @@ export function CardDisplay({ card }: CardDisplayProps) {
               {settings.companyLogo ? (
                 <img src={settings.companyLogo} alt="Company Logo" className="w-8 h-8 object-contain" />
               ) : (
-                <PawIcon className="w-8 h-8" />
+                <span className="text-white text-2xl">🐾</span>
               )}
               <div>
                 <div className="text-sm font-bold">{settings.companyName}</div>

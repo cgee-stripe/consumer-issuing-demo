@@ -41,6 +41,7 @@ interface CustomizationSettings {
   companyLogo: string | null; // base64 data URL or null for default
   primaryColor: string; // hex color
   customerName: string;
+  customerEmail: string;
   companyName: string;
   rewardsTiers: RewardTier[];
   rewardsItems: RewardItem[];
@@ -58,6 +59,7 @@ const defaultSettings: CustomizationSettings = {
   companyLogo: null,
   primaryColor: '#FF6B35', // Default Dogs R Us orange
   customerName: 'Christina',
+  customerEmail: 'customer@example.com',
   companyName: 'Dogs R Us',
   rewardsTiers: [
     { id: 'basic', name: 'Basic', threshold: 0, color: '#9CA3AF' },

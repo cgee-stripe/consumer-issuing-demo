@@ -47,7 +47,7 @@ export function RewardsBalance({ balance }: RewardsBalanceProps) {
                   className="rounded"
                 />
               ) : (
-                <span className="text-2xl">💳</span>
+                <span className="text-2xl">🐾</span>
               )}
               {currentTier.name}
             </h2>

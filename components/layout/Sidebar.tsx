@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PawIcon } from '@/components/icons/PawIcon';
 import { cn } from '@/lib/utils';
 import { useCustomization } from '@/context/CustomizationContext';
 
@@ -30,7 +29,7 @@ export function Sidebar() {
           {settings.companyLogo ? (
             <img src={settings.companyLogo} alt="Company Logo" className="w-full h-full object-contain p-1" />
           ) : (
-            <PawIcon className="w-6 h-6 text-white" />
+            <span className="text-white text-2xl">🐾</span>
           )}
         </div>
         <div>

@@ -89,17 +89,17 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
-          <p className="text-gray-600">Manage your account information and preferences</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Account Settings</h1>
+          <p className="text-sm md:text-base text-gray-600">Manage your account information and preferences</p>
         </div>
 
         {saveSuccess && (
-          <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top duration-300">
-            <Card className="bg-green-50 border-green-500 border-2 shadow-lg min-w-[400px]">
+          <div className="fixed top-4 right-4 left-4 md:left-auto z-50 animate-in slide-in-from-top duration-300">
+            <Card className="bg-green-50 border-green-500 border-2 shadow-lg md:min-w-[400px]">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

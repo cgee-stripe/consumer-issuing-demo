@@ -8,6 +8,7 @@ import { useCustomization } from '@/context/CustomizationContext';
 export default function AdminPage() {
   const { settings, updateSettings, resetToDefaults } = useCustomization();
   const [customerName, setCustomerName] = useState(settings.customerName);
+  const [customerEmail, setCustomerEmail] = useState(settings.customerEmail);
   const [companyName, setCompanyName] = useState(settings.companyName);
   const [primaryColor, setPrimaryColor] = useState(settings.primaryColor);
   const [logoPreview, setLogoPreview] = useState<string | null>(settings.companyLogo);
@@ -54,6 +55,7 @@ export default function AdminPage() {
   const handleSave = () => {
     updateSettings({
       customerName,
+      customerEmail,
       companyName,
       primaryColor,
       companyLogo: logoPreview,
@@ -72,6 +74,7 @@ export default function AdminPage() {
     if (confirm('Reset to Dogs R Us defaults? This cannot be undone.')) {
       resetToDefaults();
       setCustomerName('Christina');
+      setCustomerEmail('customer@example.com');
       setCompanyName('Dogs R Us');
       setPrimaryColor('#FF6B35');
       setLogoPreview(null);
@@ -242,12 +245,12 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Settings</h1>
-          <p className="text-gray-600">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Admin Settings</h1>
+          <p className="text-sm md:text-base text-gray-600">
             Customize the portal for your sales demos and customer presentations
           </p>
         </div>
@@ -345,6 +348,23 @@ export default function AdminPage() {
               </p>
             </div>
 
+            {/* Customer Email */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Customer Email
+              </label>
+              <input
+                type="email"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                placeholder="Enter customer email"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                This email will appear in the header under the customer name
+              </p>
+            </div>
+
             {/* Company Name */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -374,7 +394,7 @@ export default function AdminPage() {
                   </div>
                 ) : (
                   <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                    <span className="text-4xl">🐾</span>
+                    <span className="text-5xl">🐾</span>
                   </div>
                 )}
                 <div className="flex-1">
@@ -449,7 +469,7 @@ export default function AdminPage() {
                     {logoPreview ? (
                       <img src={logoPreview} alt="Logo" className="w-8 h-8 object-contain" />
                     ) : (
-                      <span className="text-white text-xl">🐾</span>
+                      <span className="text-white text-2xl">🐾</span>
                     )}
                   </div>
                   <div>

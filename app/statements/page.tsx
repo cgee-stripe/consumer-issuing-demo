@@ -241,12 +241,12 @@ export default function StatementsPage() {
       {/* Floating Test Clock - Positioned higher to avoid blocking API console */}
       <FloatingTestClock onTimeAdvanced={handleTimeAdvanced} />
 
-      <div className="p-8 space-y-8 pb-32">
+      <div className="p-4 md:p-8 space-y-6 md:space-y-8 pb-32">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Credit Statements</h1>
-            <p className="text-gray-600">View and download your credit card statements</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Credit Statements</h1>
+            <p className="text-sm md:text-base text-gray-600">View and download your credit card statements</p>
           </div>
 
           {error && (

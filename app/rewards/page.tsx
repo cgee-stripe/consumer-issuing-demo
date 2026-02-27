@@ -98,12 +98,12 @@ export default function RewardsPage() {
   }
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Cashback Rewards 💰</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Cashback Rewards 💰</h1>
+          <p className="text-sm md:text-base text-gray-600">
             Earn cashback on every purchase and redeem for available rewards
           </p>
         </div>

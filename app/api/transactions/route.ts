@@ -34,15 +34,15 @@ export async function GET(request: NextRequest) {
 
       const issuingTransactions = await transactionsResponse.json();
 
-      // Fetch repayments (payments)
-      const repaymentsUrl = new URL('https://api.stripe.com/v1/issuing/credit_repayments');
-      repaymentsUrl.searchParams.append('account', CONNECTED_ACCOUNT_ID);
+      // Fetch repayments (credit ledger adjustments)
+      const repaymentsUrl = new URL('https://api.stripe.com/v1/issuing/credit_ledger_adjustments');
       repaymentsUrl.searchParams.append('limit', '50');
 
       const repaymentsResponse = await fetch(repaymentsUrl.toString(), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+          'Stripe-Account': CONNECTED_ACCOUNT_ID,
           'Stripe-Version': '2025-01-27.acacia; issuing_credit_beta=v3',
         },
       });
@@ -50,7 +50,12 @@ export async function GET(request: NextRequest) {
       let repayments: any[] = [];
       if (repaymentsResponse.ok) {
         const repaymentsData = await repaymentsResponse.json();
-        repayments = repaymentsData.data || [];
+        // Filter for payment credits (our repayments)
+        repayments = (repaymentsData.data || []).filter((adj: any) =>
+          adj.amount_type === 'credit' &&
+          adj.reason === 'platform_issued_credit_memo' &&
+          adj.reason_description?.includes('Payment received')
+        );
       }
 
       // Transform issuing transactions (purchases - already negative from Stripe)
@@ -72,21 +77,16 @@ export async function GET(request: NextRequest) {
       });
 
       // Transform repayments (payments toward balance - positive because reducing debt)
-      const paymentTransactions = repayments.map((repayment: any) => {
-        // Get created timestamp from credit_ledger_entries if available
-        const createdTimestamp = repayment.credit_ledger_entries?.[0]?.created || Date.now() / 1000;
-
+      const paymentTransactions = repayments.map((adjustment: any) => {
         return {
-          id: repayment.id,
-          amount: (repayment.amount?.value ? repayment.amount.value / 100 : 0), // Positive = repayment
-          currency: (repayment.amount?.currency || 'usd').toUpperCase(),
-          merchant: 'Payment',
+          id: adjustment.id,
+          amount: (adjustment.amount || 0) / 100, // Convert cents to dollars (already positive)
+          currency: (adjustment.currency || 'usd').toUpperCase(),
+          merchant: 'Repayment',
           merchantCategory: 'payment',
-          status: repayment.status === 'succeeded' ? 'completed' :
-                  repayment.status === 'pending' ? 'pending' :
-                  repayment.status === 'created' ? 'completed' : 'failed',
-          date: new Date(createdTimestamp * 1000).toISOString(),
-          description: 'Credit Card Payment',
+          status: 'completed' as const,
+          date: new Date((adjustment.created || Date.now() / 1000) * 1000).toISOString(),
+          description: adjustment.reason_description || 'Credit Card Payment',
           category: 'Payment',
         };
       });

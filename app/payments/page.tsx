@@ -84,12 +84,12 @@ export default function PaymentsPage() {
   }
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Payments</h1>
-          <p className="text-gray-600">Make payments and view your payment history</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Payments</h1>
+          <p className="text-sm md:text-base text-gray-600">Make payments and view your payment history</p>
         </div>
 
         {/* Success Message */}

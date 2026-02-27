@@ -74,7 +74,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8">
       {/* Card Display */}
       <div className="max-w-7xl mx-auto">
         {card && <CardDisplay card={card} />}
@@ -89,20 +89,20 @@ export default function DashboardPage() {
       {balance && (
         <div className="max-w-7xl mx-auto">
           <Card className="bg-gradient-to-r from-primary-50 to-accent-50 border-primary-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex-1">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
                   Payment Due: {formatDate(balance.dueDate, 'long')}
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-sm sm:text-base text-gray-700">
                   Minimum payment:{' '}
                   <span className="font-bold">
                     {formatCurrency(balance.minimumPayment, balance.currency)}
                   </span>
                 </p>
               </div>
-              <Link href="/payments">
-                <Button size="lg">Make Payment</Button>
+              <Link href="/payments" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto">Make Payment</Button>
               </Link>
             </div>
           </Card>
