@@ -105,6 +105,7 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+          'Stripe-Account': CONNECTED_ACCOUNT_ID,
           'Stripe-Version': '2025-01-27.acacia; issuing_credit_beta=v3',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
