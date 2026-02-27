@@ -64,3 +64,60 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    if (!CUSTOMER_ID || !CONNECTED_ACCOUNT_ID) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Stripe configuration missing',
+        },
+        { status: 500 }
+      );
+    }
+
+    const body = await request.json();
+    const { name, email, phone } = body;
+
+    // Update customer in Stripe
+    const customer = await stripe.customers.update(
+      CUSTOMER_ID,
+      {
+        name,
+        email,
+        phone,
+      },
+      {
+        stripeAccount: CONNECTED_ACCOUNT_ID,
+      }
+    );
+
+    // Map status
+    let accountStatus: 'active' | 'suspended' | 'closed' = 'active';
+    if (customer.deleted) {
+      accountStatus = 'closed';
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        accountId: customer.id,
+        status: accountStatus,
+        accountHolder: customer.name || 'Unknown',
+        email: customer.email || 'No email on file',
+        phone: customer.phone || 'No phone on file',
+        since: new Date((customer.created || 0) * 1000).toISOString(),
+      },
+    });
+  } catch (error: any) {
+    console.error('Failed to update account:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Failed to update account',
+      },
+      { status: 500 }
+    );
+  }
+}

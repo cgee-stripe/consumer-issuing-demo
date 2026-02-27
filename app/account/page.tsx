@@ -10,6 +10,10 @@ import { AccountStatus } from '@/types/card';
 export default function AccountPage() {
   const [account, setAccount] = useState<AccountStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [editedAccount, setEditedAccount] = useState<Partial<AccountStatus>>({});
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     async function fetchAccount() {
@@ -20,6 +24,7 @@ export default function AccountPage() {
           stripeEndpoint: 'GET /v1/customers/:id',
         });
         setAccount(data.data);
+        setEditedAccount(data.data);
       } catch (error) {
         console.error('Failed to fetch account:', error);
       } finally {
@@ -29,6 +34,43 @@ export default function AccountPage() {
 
     fetchAccount();
   }, []);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setSaveSuccess(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedAccount(account || {});
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
+    try {
+      const data = await apiClient.patch('/api/account', {
+        apiName: 'Update Customer',
+        apiCategory: 'Account',
+        stripeEndpoint: 'POST /v1/customers/:id',
+        body: {
+          name: editedAccount.accountHolder,
+          email: editedAccount.email,
+          phone: editedAccount.phone,
+        },
+      });
+      setAccount(data.data);
+      setEditedAccount(data.data);
+      setIsEditing(false);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error: any) {
+      console.error('Failed to update account:', error);
+      alert(`Failed to update account: ${error.message || 'Please try again.'}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -55,10 +97,55 @@ export default function AccountPage() {
           <p className="text-gray-600">Manage your account information and preferences</p>
         </div>
 
+        {saveSuccess && (
+          <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top duration-300">
+            <Card className="bg-green-50 border-green-500 border-2 shadow-lg min-w-[400px]">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-green-900 text-lg">Account Updated!</h3>
+                  <p className="text-green-700 text-sm">Your changes have been saved successfully.</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Account Information */}
           <Card>
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Account Information</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Account Information</h2>
+              {!isEditing ? (
+                <button
+                  onClick={handleEdit}
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors text-sm font-medium"
+                >
+                  ✏️ Edit
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium disabled:opacity-50"
+                  >
+                    {isSaving ? 'Saving...' : '💾 Save'}
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="space-y-4">
               <div>
                 <label className="text-sm text-gray-600">Account ID</label>
@@ -66,18 +153,45 @@ export default function AccountPage() {
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Account Holder</label>
-                <p className="text-lg mt-1">{account.accountHolder}</p>
+                <label className="text-sm text-gray-600 block mb-1">Account Holder</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedAccount.accountHolder || ''}
+                    onChange={(e) => setEditedAccount({ ...editedAccount, accountHolder: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                ) : (
+                  <p className="text-lg">{account.accountHolder}</p>
+                )}
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Email Address</label>
-                <p className="text-lg mt-1">{account.email}</p>
+                <label className="text-sm text-gray-600 block mb-1">Email Address</label>
+                {isEditing ? (
+                  <input
+                    type="email"
+                    value={editedAccount.email || ''}
+                    onChange={(e) => setEditedAccount({ ...editedAccount, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                ) : (
+                  <p className="text-lg">{account.email}</p>
+                )}
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Phone Number</label>
-                <p className="text-lg mt-1">{account.phone}</p>
+                <label className="text-sm text-gray-600 block mb-1">Phone Number</label>
+                {isEditing ? (
+                  <input
+                    type="tel"
+                    value={editedAccount.phone || ''}
+                    onChange={(e) => setEditedAccount({ ...editedAccount, phone: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                ) : (
+                  <p className="text-lg">{account.phone}</p>
+                )}
               </div>
 
               <div>
