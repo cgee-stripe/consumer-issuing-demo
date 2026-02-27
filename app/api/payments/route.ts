@@ -95,19 +95,26 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const { amount, paymentMethod } = body;
-
-  if (!CONNECTED_ACCOUNT_ID || !STRIPE_SECRET_KEY || !STRIPE_CUSTOMER_ID) {
-    throw new Error('Stripe configuration missing');
-  }
-
-  // Create repayment using Stripe credit_repayments API
-  // Using test token pm_usBankAccount_success for a verified bank account
-  // Note: amount[value] expects cents as an integer
-  const amountInCents = Math.round(amount * 100);
-
   try {
+    const body = await request.json();
+    const { amount, paymentMethod } = body;
+
+    if (!CONNECTED_ACCOUNT_ID || !STRIPE_SECRET_KEY || !STRIPE_CUSTOMER_ID) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Stripe configuration missing',
+        },
+        { status: 500 }
+      );
+    }
+
+    // Create repayment using Stripe credit_repayments API
+    // Using test token pm_usBankAccount_success for a verified bank account
+    // Note: amount[value] expects cents as an integer
+    const amountInCents = Math.round(amount * 100);
+
+    try {
 
     const response = await fetch(
       'https://api.stripe.com/v1/issuing/credit_repayments',
@@ -263,5 +270,15 @@ export async function POST(request: NextRequest) {
         source: 'mock_data_fallback',
       });
     }
+  }
+  } catch (outerError: any) {
+    console.error('Unexpected error in payment processing:', outerError);
+    return NextResponse.json(
+      {
+        success: false,
+        error: outerError.message || 'Failed to process payment',
+      },
+      { status: 500 }
+    );
   }
 }
